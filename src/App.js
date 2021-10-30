@@ -118,16 +118,26 @@ const UploadingFile = ({name}) => {
 } 
 
 const UploadedFile = ({name, size}) => {
+  const formatSize = (size) => {
+    if (size < 1000) {
+      return size + "B"
+    } else if (size > 1000 && size < 1000000) {
+      return Math.floor(size/100)/10 + "KB"
+    } else {
+      return Math.floor(size/100000)/10 + "MB"
+    }
+  }
+
   return (
     <article className="file-uploading">
       <img src={require('./images/icon-file.jpeg').default} alt="file" />
 
       <div className="file-uploading--info">
         <div className="info">
-          <span>{name.length > 6 ? name.substr(0, 6) + "...":name} <i className="bi bi-dot"></i> Uploaded</span>
+          <span>{name.length > 16 ? name.substr(0, 16) + "...":name}</span>
         </div>
 
-        <span className="file-size">{size}B</span>
+        <span className="file-size">{formatSize(size)}</span>
       </div>
 
       <i className="bi bi-check file-uploaded"></i>
