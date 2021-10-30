@@ -1,38 +1,151 @@
+body {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+  background-color: #7E73FF;
+  font-family: Ubuntu, Arial, Helvetica, sans-serif;
+}
+
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 250px;
+  min-height: 250px;
+  max-height: 400px;
+  height: auto;
+  border-radius: 7px;
+  background-color: #F6F6F6;
+  box-shadow: 0 2px 4px #6860BD;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 20px 20px 30px 20px;
+}
+
+.header-title {
+  width: 100%;
+  text-align: center;
+  color: #7E73FF;
+  font-size: 20px;
+  margin-top: 0;
+}
+
+.trigger {
+  width: calc(100% - 40px);
+  min-height: 80px;
+  height: auto;
+  border-radius: 5px;
+  border: 3px dashed #7E73FF;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+}
+
+.trigger:hover {
+  cursor: pointer;
+}
+
+.trigger img {
+  width: 80px;
+  height: 50px;
+}
+
+.files {
+  width: 100%;
+  height: auto;
+  margin-top: 20px;
+}
+
+.file-uploading {
+  width: calc(100% - 15px);
+  height: 60px;
+  border-radius: 5px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .25);
+  background-color: #fff;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 5px 10px 5px 5px;
+  margin-bottom: 5px;
+}
+
+.file-uploading img {
+  width: 50px;
+  height: 50px;
+}
+
+.file-uploading--info {
+  display: flex;
+  flex-direction: column;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: flex-start;
+  width: 100%;
+  height: 100%;
 }
 
-.App-link {
-  color: #61dafb;
+.file-uploading--info .info {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+.file-uploading--info .info span, .file-size {
+  font-size: 14px;
+}
+
+.file-size {
+  margin-top: 10px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 5px;
+  border-radius: 5px;
+  background-color: #D3D0EF;
+  margin-top: 15px;
+  overflow: hidden;
+}
+
+span.progress-bar span {
+  display: block;
+  width: 50%;
+  height: 100%;
+  border-radius: 5px;
+  background-color: #7E73FF;
+}
+
+.uploaded-files {
+  width: calc(100% - 4px);
+  max-height: calc(75px * 2);
+  height: auto;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  padding: 2px;
+}
+
+.file-uploaded {
+  color: #7E73FF;
+  font-size: 2rem;
+}
+
+@media screen and (max-width: 350px) {
+  .App {
+    width: calc(100% - 40px);
+    height: 100vh;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transform: translate(0, 0);
+    max-height: inherit;
+    border-radius: 0;
   }
 }
+
