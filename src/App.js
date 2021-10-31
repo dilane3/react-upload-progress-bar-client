@@ -1,14 +1,18 @@
-import React, {useState, useRef, useCallback} from 'react'
+import React, {useState, useRef} from 'react'
 import './App.css';
 import axios from 'axios'
+import {Image} from "react-image-progressive-loading"
 
 const instance = axios.create({
-  baseURL: "http://localhost:5000/api/file"
+  baseURL: "http://192.168.43.81:5000/api/file"
 })
+
+const image1 = require("./images/upload.jpeg").default
+const image2 = require("./images/icon-file.jpeg").default
 
 function App() {
   const [files, setFiles] = useState([])
-  const [filesUploading, setFilesUploading] = useState([])
+  const [fileUploading, setFileUploading] = useState(null)
 
   const inputFile = useRef()
 
@@ -18,43 +22,46 @@ function App() {
 
     if (file) {
       const formData = new FormData()
-      const filesUploadingClone = [...filesUploading]
 
-      // adding file in the state
-      let id = new Date().getTime()
-
+      // creating a new file representation
       const fileToUpload = {
-        id,
         name: file.name.split('.')[0],
-        size: file.size
+        size: file.size,
+        percentage: 0
       }
 
-      filesUploadingClone.push(fileToUpload)
-      setFilesUploading(filesUploadingClone)
+      setFileUploading(fileToUpload)
 
       // building of form data
       formData.append("image", file)
-      formData.append("id", id)
+
+      // progressive loading
+      const options = {
+        onUploadProgress: (progressEvent) => {
+          const {loaded, total} = progressEvent
+
+          const percentage = Math.floor((loaded * 100)/total)
+
+          console.log(`${loaded}B on ${total}B | percentage = ${percentage}`)
+
+          setFileUploading(state => ({...state, percentage}))
+        }
+      }
   
       try {
-        const response = await instance.post("/upload", formData)
+        const response = await instance.post("/upload", formData, options)
         
-        const fileUploaded = response.data
-        const index = filesUploadingClone.findIndex(file => file.id === Number(fileUploaded.id))
+        const filesClone = [...files]
+        let id = 1
 
-        console.log(index)
-        console.log(fileUploaded.id)
-        console.log(filesUploading)
+        if (filesClone.length > 0)
+          id = filesClone[0].id + 1
 
-        if (index > -1) {
-          const filesClone = [...files]
+        filesClone.unshift({...fileToUpload, id})
+        console.log(filesClone)
 
-          filesClone.push({...filesUploadingClone[index]})
-          filesUploadingClone.splice(index, 1)
-
-          setFiles(filesClone)
-          setFilesUploading(filesUploadingClone)
-        }
+        setFileUploading(null)
+        setFiles(filesClone)
         console.log(response.data)
       } catch (err) {
         console.error(err)
@@ -62,12 +69,17 @@ function App() {
     }
   }
 
+  const handleClickFile = () => {
+    if (!fileUploading)
+      inputFile.current.click()
+  }
+
   return (
     <div className="App">
       <h3 className="header-title">Images Uploader</h3>
 
-      <div className="trigger" onClick={() => inputFile.current.click()}>
-        <img src={require('./images/upload.jpeg').default} alt="upload" />
+      <div className="trigger" onClick={handleClickFile}>
+        <Image image={image1} alt="upload" className="upload-img" blur={true} />
 
         <span>Browse a file</span>
       </div>
@@ -81,12 +93,10 @@ function App() {
 
       <section className="files">
         {
-          filesUploading.map(file => (
-            <UploadingFile key={file.id} name={file.name} />
-          ))
+          fileUploading && <UploadingFile file={fileUploading} />
         }
 
-        <div className="uploaded-files">
+        <div className={`uploaded-files ${!fileUploading && "uploaded-files--processing"}`}>
           {
             files.map(file => (
               <UploadedFile key={file.id} name={file.name} size={file.size} />
@@ -98,19 +108,21 @@ function App() {
   );
 }
 
-const UploadingFile = ({name}) => {
+const UploadingFile = ({file}) => {
+  const {name, percentage} = file
+
   return (
     <article className="file-uploading">
-      <img src={require('./images/icon-file.jpeg').default} alt="file" />
+      <Image image={image2} alt="file" className="file-img" blur={true} />
 
       <div className="file-uploading--info">
         <div className="info">
           <span>{name.length > 6 ? name.substr(0, 6) + "...":name} <i className="bi bi-dot"></i> Uploading</span>
-          <span>50%</span>
+          <span>{percentage}%</span>
         </div>
 
         <span className="progress-bar">
-          <span></span>
+          <span style={{width: `${percentage}%`}}></span>
         </span>
       </div>
     </article>

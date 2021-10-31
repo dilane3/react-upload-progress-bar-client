@@ -13,7 +13,7 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   width: 250px;
-  min-height: 250px;
+  min-height: 100px;
   max-height: 400px;
   height: auto;
   border-radius: 7px;
@@ -119,6 +119,7 @@ span.progress-bar span {
   height: 100%;
   border-radius: 5px;
   background-color: #7E73FF;
+  transition: width .35s ease-out;
 }
 
 .uploaded-files {
@@ -128,6 +129,10 @@ span.progress-bar span {
   overflow-y: scroll;
   scrollbar-width: none;
   padding: 2px;
+}
+
+.uploaded-files--processing {
+  max-height: calc(75px * 3);
 }
 
 .file-uploaded {
@@ -146,6 +151,22 @@ span.progress-bar span {
     transform: translate(0, 0);
     max-height: inherit;
     border-radius: 0;
+  }
+
+  .uploaded-files {
+    max-height: calc(100vh - 230px);
+  }
+}
+
+@media screen and (max-height: 450px) {
+  .App {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: calc(100vh - 30px);
+  }
+
+  .uploaded-files {
+    max-height: calc(75px * 3);
   }
 }
 
